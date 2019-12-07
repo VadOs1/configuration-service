@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.gmail.dissa.vadim.configurationservice'
 version = '1.0.0'
-sourceCompatibility = '12'
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -33,7 +33,7 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 task createDockerfile(type: Dockerfile) {
     destFile = project.file('build/libs/Dockerfile')
-    from 'openjdk:12'
+    from 'openjdk:11'
     instruction 'RUN mkdir usr/local/configurationservice'
     copyFile("configurationservice-${version}.jar", "/usr/local/configurationservice/configurationservice-${version}.jar")
     entryPoint 'java'
