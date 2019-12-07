@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+      java: openjdk11
+  build:
+    commands:
+      - chmod +x ./gradlew
+      - ./gradlew -P version=${CODEBUILD_BUILD_NUMBER} build
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws --region ${AWS_REGION} ecr get-login --no-include-email | /bin/bash
+      - docker tag ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} ${ECR_REPO}/${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER}
+      - docker tag ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} ${ECR_REPO}/${SERVICE_IMAGE}:latest
+      - docker push ${ECR_REPO}/${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER}
+      - docker push ${ECR_REPO}/${SERVICE_IMAGE}:latest
