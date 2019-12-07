@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.gmail.dissa.vadim.configurationservice'
-version = '1.0.0'
+version = "${version != 'unspecified' ? version : '0.0'}"
 sourceCompatibility = '11'
 
 repositories {
