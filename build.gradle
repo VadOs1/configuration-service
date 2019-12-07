@@ -1,52 +1,23 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.0.RELEASE'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
-    id 'com.bmuschko.docker-remote-api' version '5.3.0'
 }
-
-group = 'com.gmail.dissa.vadim.configurationservice'
-version = "${version != 'unspecified' ? version : '0.0'}"
-sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    set('springCloudVersion', "Greenwich.SR3")
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3"
+    }
 }
+
+group = 'com.gmail.dissa.vadim.configurationservice'
+sourceCompatibility = '11'
 
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-config-server'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-
-task createDockerfile(type: Dockerfile) {
-    destFile = project.file('build/libs/Dockerfile')
-    from 'openjdk:11'
-    instruction 'RUN mkdir usr/local/configurationservice'
-    copyFile("configurationservice-${version}.jar", "/usr/local/configurationservice/configurationservice-${version}.jar")
-    entryPoint 'java'
-    defaultCommand '-jar',
-            '-Xms256m',
-            '-Xmx256m',
-            "/usr/local/configurationservice/configurationservice-${version}.jar"
-}
-
-task buildImage(type: DockerBuildImage) {
-    dependsOn createDockerfile
-    inputDir = createDockerfile.destFile.get().asFile.parentFile
-    tags = ["vadimdissa/configuration-service:${version}"]
-}
-
-build.finalizedBy(buildImage)
