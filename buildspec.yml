@@ -15,3 +15,4 @@ phases:
       - docker tag ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} ${ECR_REPO}/${SERVICE_IMAGE}:latest
       - docker push ${ECR_REPO}/${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER}
       - docker push ${ECR_REPO}/${SERVICE_IMAGE}:latest
+      - aws ecs update-service --force-new-deployment --cluster ${ECS_CLUSTER_NAME} --service ${ECS_SERVICE_NAME}
