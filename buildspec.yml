@@ -10,6 +10,7 @@ phases:
       - chmod +x ./gradlew
       - ./gradlew build
       - docker build -t ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} .
+      - aws ecr get-login --region $AWS_REGION --no-include-email
       - docker tag ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} ${ECR_REPO}/${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER}
       - docker tag ${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER} ${ECR_REPO}/${SERVICE_IMAGE}:latest
       - docker push ${ECR_REPO}/${SERVICE_IMAGE}:${CODEBUILD_BUILD_NUMBER}
